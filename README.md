@@ -11,5 +11,5 @@ Request for Information
 - TRUST IO
 
 
-![Pascal's Triangle]('https://github.com/jradd/public/blob/master/pascals.gif')
+![Pascal's Triangle](https://github.com/jradd/public/blob/master/pascals.gif)
 
