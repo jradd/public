@@ -1,4 +1,22 @@
 """ define GIF standards interchange format """
+from io import BytesIO
+
+# constants from array2gif
+BLOCK_TERMINATOR = b'\x00'
+EXTENSION = b'\x21'
+HEADER = b'GIF89a'
+TRAILER = b'\x3b'
+ZERO = b'\x00'
+
+
+class LowerCaseDict(dict):
+  def __getitem__(self, key):
+    return dict.__getitem__(self, self.item(key.lower()))
+
+class PlaceholderDict(dict):
+  def __missing__(self, key):
+    return '<{}>, missing.'.format(key)
+
 
 # FIXME: Too few public methods
 class ImageSequence:
@@ -43,14 +61,14 @@ def handler(infile, outfile):
     """ generic method for file:obj interchange """
     with open(infile, 'rb+') as rio:
         buf = BytesIO(rio.read())
-    im_data = buf.getvalue()
-#    im_size = buf.getbuffer()
     out = open(outfile, 'wb+')
     if out.writable:
-        out.write(im_data)
-        out.close()
+        out.write(buf.getvalue())
+        view = buf.getbuffer()
+    out.close()
+#    im_size = buf.getbuffer().nbytes
+#    im_data = buf.getvalue()
     return buf
-
 
 if __name__ == '__handler__':
     # FIX: getbuffer().__slice__
