@@ -18,6 +18,17 @@ priorities = ()
 #      raise IndexError   # end of sequence
 #
 
+# my_hexlify() module
+#BUFFER = b'47494638396101000100800000000000ffffff21f90401000000002c000000000100010000020144003b'
+"""
+In [2]: hexlify(BUFFER)
+7 @[0] 7 @[1] 7 @[2] 6 @[3] 6 @[4] 7 @[5] 1 @[6] 0 @[7] 1 @[8] 0 @[9] 8 @[10] 0 @[11] 0 @[12] 0 @[13] 0 @[14] 0 @[15] 8 @[16] 8 @[17] 8 @[18] 6 @[19] 8 @[20] 3 @[21] 1 @[22] 0 @[23] 0 @[24] 0 @[25] 0 @[26] 6 @[27] 0 @[28] 0 @[29] 0 @[30] 0 @[31] 1 @[32] 0 @[33] 1 @[34] 0 @[35] 0 @[36] 2 @[37] 1 @[38] 7 @[39] 0 @[40] 6 @[41]
+Out[2]: b'GIF89a\x01\x00\x01\x00\x80\x00\x00\x00\x00\x00\xff\xff\xff!\xf9\x04\x01\x00\x00\x00\x00,\x00\x00\x00\x00\x01\x00\x01\x00\x00\x02\x01D\x00;'
+"""
+# to_bytes(_chunk_bs(BUFFER)) ==> hexlify()
+# hexlify(BUFFER) ==> bytestring
+
+
 def _chunk_bs(bs, step=2):
     """chunk by step count"""
     stop = len(bs)
@@ -27,6 +38,39 @@ def _chunk_bs(bs, step=2):
         bs_to_list.insert(bstep, bs[start:bstep+step])
         start = start + step
     return bs_to_list
+
+def _from_list(self: list):
+    """bytelist to ints"""
+    return [int(str(b, 'utf8'), 16) for b in self if b.decode('utf8', errors='ignore').isalpha]
+   
+def _bit_length(self: int):
+    s = bin(self)
+    s = s.lstrip('-0b')
+    return len(s)
+
+def to_bytes(self: list):
+    """intlist to bytes"""
+    return [b.to_bytes(1, byteorder='big') for b in _from_list(self)]
+
+
+def to_bin(self: str):
+    for b in _from_list(_chunk_bs(self)):
+        return bin(b)
+
+def hexlify(self: str, verbose=False):
+    """str/int repr to hex"""
+    nbytes = len(_chunk_bs(self))
+    buf = b''
+    strlen = ''
+    for b in to_bytes(_chunk_bs(self)):
+        buf+=b
+#    for s in _from_list(_chunk_bs(self)):
+#        strlen+=f'{ _bit_length(s): 02d}'
+    if verbose:
+        for n in range(nbytes):
+            strlen += f'{_bit_length(_from_list(_chunk_bs(self))[n])} @[{n}] '
+        print(strlen)
+    return buf
 
 
 
