@@ -5,6 +5,13 @@ task = {}
 priority = []
 priorities = ()
 
+wchar: dict = {i.to_bytes(1, 'big'): i for i in range(0, 255)}
+uintlong: dict = {i: b for b, i in wchar.items() if i > 128}
+uintshort: dict = {i: b for b, i in wchar.items() if i < 32}
+uint: dict = {i: b for b, i in wchar.items() if not uintlong.get(i) and i > 32}
+# might want to exclude b'\x7f', b'\x80', b'!', b'"' to name a few from `uint`
+
+
 #class ImageSequence:
 #  def __init__(self, im):
 #    self.im = im
